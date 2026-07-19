@@ -12,8 +12,13 @@ __pycache__/
 
 # Build output
 dist/
-build/
+/build/*
+!/build/designdna
+build/designdna/node_modules/
 *.log
 
 # OS
 .DS_Store
+
+# build artifacts of the studied app, keep sources but not deps
+build/designdna/node_modules/

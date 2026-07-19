@@ -1,0 +1,571 @@
+{
+  "schemaVersion": "1.0.0",
+  "meta": {
+    "url": "https://example.com/",
+    "requestedUrl": "https://example.com/",
+    "title": "Example Domain",
+    "viewport": {
+      "width": 1440,
+      "height": 900,
+      "deviceScaleFactor": 1
+    },
+    "timestamp": "2026-07-19T21:17:19.098Z",
+    "document": {
+      "language": "en",
+      "scrollWidth": 1440,
+      "scrollHeight": 900,
+      "contentType": "text/html"
+    },
+    "navigation": {
+      "status": 200,
+      "statusText": ""
+    },
+    "notes": []
+  },
+  "colors": {
+    "items": [
+      {
+        "color": "rgb(0, 0, 0)",
+        "count": 126,
+        "roles": [
+          {
+            "role": "border",
+            "count": 60
+          },
+          {
+            "role": "text",
+            "count": 36
+          },
+          {
+            "role": "accent",
+            "count": 30
+          }
+        ],
+        "properties": [
+          {
+            "property": "fill",
+            "count": 8
+          },
+          {
+            "property": "flood-color",
+            "count": 8
+          },
+          {
+            "property": "stop-color",
+            "count": 8
+          },
+          {
+            "property": "border-block-end-color",
+            "count": 6
+          },
+          {
+            "property": "border-block-start-color",
+            "count": 6
+          },
+          {
+            "property": "border-bottom-color",
+            "count": 6
+          },
+          {
+            "property": "border-inline-end-color",
+            "count": 6
+          },
+          {
+            "property": "border-inline-start-color",
+            "count": 6
+          },
+          {
+            "property": "border-left-color",
+            "count": 6
+          },
+          {
+            "property": "border-right-color",
+            "count": 6
+          },
+          {
+            "property": "border-top-color",
+            "count": 6
+          },
+          {
+            "property": "caret-color",
+            "count": 6
+          },
+          {
+            "property": "color",
+            "count": 6
+          },
+          {
+            "property": "column-rule-color",
+            "count": 6
+          },
+          {
+            "property": "outline-color",
+            "count": 6
+          },
+          {
+            "property": "row-rule-color",
+            "count": 6
+          },
+          {
+            "property": "text-decoration-color",
+            "count": 6
+          },
+          {
+            "property": "text-emphasis-color",
+            "count": 6
+          },
+          {
+            "property": "-webkit-text-fill-color",
+            "count": 6
+          },
+          {
+            "property": "-webkit-text-stroke-color",
+            "count": 6
+          }
+        ],
+        "exampleSelectors": [
+          "html",
+          "body",
+          "div",
+          "h1",
+          "p:nth-of-type(1)",
+          "p:nth-of-type(2)"
+        ]
+      },
+      {
+        "color": "rgb(51, 68, 136)",
+        "count": 34,
+        "roles": [
+          {
+            "role": "border",
+            "count": 20
+          },
+          {
+            "role": "text",
+            "count": 12
+          },
+          {
+            "role": "accent",
+            "count": 2
+          }
+        ],
+        "properties": [
+          {
+            "property": "border-block-end-color",
+            "count": 2
+          },
+          {
+            "property": "border-block-start-color",
+            "count": 2
+          },
+          {
+            "property": "border-bottom-color",
+            "count": 2
+          },
+          {
+            "property": "border-inline-end-color",
+            "count": 2
+          },
+          {
+            "property": "border-inline-start-color",
+            "count": 2
+          },
+          {
+            "property": "border-left-color",
+            "count": 2
+          },
+          {
+            "property": "border-right-color",
+            "count": 2
+          },
+          {
+            "property": "border-top-color",
+            "count": 2
+          },
+          {
+            "property": "caret-color",
+            "count": 2
+          },
+          {
+            "property": "color",
+            "count": 2
+          },
+          {
+            "property": "column-rule-color",
+            "count": 2
+          },
+          {
+            "property": "outline-color",
+            "count": 2
+          },
+          {
+            "property": "row-rule-color",
+            "count": 2
+          },
+          {
+            "property": "text-decoration-color",
+            "count": 2
+          },
+          {
+            "property": "text-emphasis-color",
+            "count": 2
+          },
+          {
+            "property": "-webkit-text-fill-color",
+            "count": 2
+          },
+          {
+            "property": "-webkit-text-stroke-color",
+            "count": 2
+          }
+        ],
+        "exampleSelectors": [
+          "a",
+          "span"
+        ]
+      },
+      {
+        "color": "rgb(255, 255, 255)",
+        "count": 8,
+        "roles": [
+          {
+            "role": "accent",
+            "count": 8
+          }
+        ],
+        "properties": [
+          {
+            "property": "lighting-color",
+            "count": 8
+          }
+        ],
+        "exampleSelectors": [
+          "html",
+          "body",
+          "div",
+          "h1",
+          "p:nth-of-type(1)",
+          "p:nth-of-type(2)"
+        ]
+      },
+      {
+        "color": "rgba(0, 0, 0, 0.18)",
+        "count": 8,
+        "roles": [
+          {
+            "role": "accent",
+            "count": 8
+          }
+        ],
+        "properties": [
+          {
+            "property": "-webkit-tap-highlight-color",
+            "count": 8
+          }
+        ],
+        "exampleSelectors": [
+          "html",
+          "body",
+          "div",
+          "h1",
+          "p:nth-of-type(1)",
+          "p:nth-of-type(2)"
+        ]
+      },
+      {
+        "color": "rgba(0, 0, 0, 0)",
+        "count": 7,
+        "roles": [
+          {
+            "role": "background",
+            "count": 7
+          }
+        ],
+        "properties": [
+          {
+            "property": "background-color",
+            "count": 7
+          }
+        ],
+        "exampleSelectors": [
+          "html",
+          "div",
+          "h1",
+          "p:nth-of-type(1)",
+          "p:nth-of-type(2)",
+          "a"
+        ]
+      },
+      {
+        "color": "rgb(238, 238, 238)",
+        "count": 1,
+        "roles": [
+          {
+            "role": "background",
+            "count": 1
+          }
+        ],
+        "properties": [
+          {
+            "property": "background-color",
+            "count": 1
+          }
+        ],
+        "exampleSelectors": [
+          "body"
+        ]
+      }
+    ],
+    "inspectedElementCount": 8,
+    "notes": []
+  },
+  "typography": {
+    "families": [
+      {
+        "family": "system-ui, sans-serif",
+        "count": 3,
+        "variants": [
+          {
+            "size": "16px",
+            "weight": "400",
+            "lineHeight": "normal",
+            "letterSpacing": "normal",
+            "fontStyle": "normal",
+            "count": 2,
+            "exampleElement": "p:nth-of-type(1)",
+            "sampleText": "This domain is for use in documentation examples without needing permission. Avoid use in operations."
+          },
+          {
+            "size": "24px",
+            "weight": "700",
+            "lineHeight": "normal",
+            "letterSpacing": "normal",
+            "fontStyle": "normal",
+            "count": 1,
+            "exampleElement": "h1",
+            "sampleText": "Example Domain"
+          }
+        ]
+      }
+    ],
+    "notes": []
+  },
+  "spacing": {
+    "commonValues": [
+      {
+        "value": "0px",
+        "count": 46,
+        "marginCount": 18,
+        "paddingCount": 28,
+        "exampleSelectors": [
+          "html",
+          "body",
+          "div",
+          "h1",
+          "p:nth-of-type(1)",
+          "p:nth-of-type(2)"
+        ]
+      },
+      {
+        "value": "16px",
+        "count": 4,
+        "marginCount": 4,
+        "paddingCount": 0,
+        "exampleSelectors": [
+          "p:nth-of-type(1)",
+          "p:nth-of-type(2)"
+        ]
+      },
+      {
+        "value": "135px",
+        "count": 2,
+        "marginCount": 2,
+        "paddingCount": 0,
+        "exampleSelectors": [
+          "body"
+        ]
+      },
+      {
+        "value": "288px",
+        "count": 2,
+        "marginCount": 2,
+        "paddingCount": 0,
+        "exampleSelectors": [
+          "body"
+        ]
+      },
+      {
+        "value": "16.08px",
+        "count": 2,
+        "marginCount": 2,
+        "paddingCount": 0,
+        "exampleSelectors": [
+          "h1"
+        ]
+      }
+    ],
+    "margins": [
+      {
+        "value": "0px",
+        "count": 18,
+        "exampleSelectors": [
+          "html",
+          "div",
+          "h1",
+          "p:nth-of-type(1)",
+          "p:nth-of-type(2)",
+          "a"
+        ]
+      },
+      {
+        "value": "16px",
+        "count": 4,
+        "exampleSelectors": [
+          "p:nth-of-type(1)",
+          "p:nth-of-type(2)"
+        ]
+      },
+      {
+        "value": "135px",
+        "count": 2,
+        "exampleSelectors": [
+          "body"
+        ]
+      },
+      {
+        "value": "288px",
+        "count": 2,
+        "exampleSelectors": [
+          "body"
+        ]
+      },
+      {
+        "value": "16.08px",
+        "count": 2,
+        "exampleSelectors": [
+          "h1"
+        ]
+      }
+    ],
+    "paddings": [
+      {
+        "value": "0px",
+        "count": 28,
+        "exampleSelectors": [
+          "html",
+          "body",
+          "div",
+          "h1",
+          "p:nth-of-type(1)",
+          "p:nth-of-type(2)"
+        ]
+      }
+    ],
+    "containerMaxWidths": [],
+    "borderRadii": [],
+    "boxShadows": [],
+    "notes": []
+  },
+  "breakpoints": {
+    "items": [],
+    "summary": [],
+    "stylesheets": [
+      {
+        "source": "inline://document/style-1",
+        "origin": "document",
+        "crossOrigin": true,
+        "status": "parsed",
+        "method": "inline",
+        "statusCode": null,
+        "bytes": 145,
+        "error": null
+      }
+    ],
+    "notes": []
+  },
+  "animations": {
+    "keyframes": [],
+    "transitions": [],
+    "unmatchedAnimationUses": [],
+    "intersectionObserverHints": [],
+    "notes": [
+      "Trigger labels are heuristics based on loaded computed styles, state selectors, IntersectionObserver activity, and CSS animation timelines."
+    ]
+  },
+  "backgrounds": {
+    "sections": [
+      {
+        "sectionSelector": "body > div",
+        "sectionKind": "section",
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "backgroundImage": "none",
+        "imageUrls": [],
+        "backgroundSize": "auto",
+        "backgroundPosition": "0% 0%",
+        "backgroundRepeat": "repeat",
+        "backgroundAttachment": "scroll",
+        "backgroundOrigin": "padding-box",
+        "backgroundClip": "border-box",
+        "backgroundBlendMode": "normal",
+        "mixBlendMode": "normal",
+        "filter": "none",
+        "backdropFilter": "none"
+      }
+    ],
+    "heroMedia": [],
+    "notes": [
+      "No visible candidates passed the top-level outline filter; kept the 1 largest visible candidate as a fallback."
+    ]
+  },
+  "inlineSvgs": {
+    "thresholdBytes": 4096,
+    "items": [],
+    "notes": []
+  },
+  "sections": {
+    "items": [
+      {
+        "kind": "section",
+        "selector": "body > div",
+        "tag": "div",
+        "id": null,
+        "classes": [],
+        "role": null,
+        "approximateHeight": 96,
+        "approximateWidth": 864,
+        "documentTop": 135,
+        "headings": [
+          "Example Domain"
+        ],
+        "keyComputedStyles": {
+          "display": "block",
+          "position": "static",
+          "color": "rgb(0, 0, 0)",
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "backgroundImage": "none",
+          "fontFamily": "system-ui, sans-serif",
+          "fontSize": "16px",
+          "margin": "0px",
+          "padding": "0px",
+          "maxWidth": "none",
+          "borderRadius": "0px",
+          "boxShadow": "none",
+          "overflow": "visible"
+        },
+        "structure": {
+          "directChildren": 3,
+          "headings": 1,
+          "links": 1,
+          "buttons": 0,
+          "images": 0
+        },
+        "description": "section headed “Example Domain”; 3 direct children; 1 link."
+      }
+    ],
+    "totalCandidates": 1,
+    "notes": [
+      "No visible candidates passed the top-level outline filter; kept the 1 largest visible candidate as a fallback."
+    ]
+  },
+  "notes": []
+}

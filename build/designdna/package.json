@@ -1,0 +1,20 @@
+{
+  "name": "designdna",
+  "version": "0.1.0",
+  "description": "Capture the visual design DNA of a rendered web page.",
+  "type": "module",
+  "bin": {
+    "designdna": "bin/designdna.js"
+  },
+  "scripts": {
+    "capture": "node bin/designdna.js",
+    "test": "node --test",
+    "smoke": "node scripts/smoke.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "playwright": "^1.61.1"
+  }
+}
