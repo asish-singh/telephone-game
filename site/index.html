@@ -1,0 +1,636 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Telephone Game, a traced study of instruction drift</title>
+<meta name="description" content="How one instruction drifted, and mostly did not drift, from a human's intent through an orchestrating AI to coding subagents and into code.">
+<style>
+  :root {
+    --green: #16a34a;
+    --amber: #b45309;
+    --red: #dc2626;
+    --bg: #fbfaf7;
+    --panel: #ffffff;
+    --text: #1c1917;
+    --text-soft: #57534e;
+    --border: #e7e3da;
+    --accent: #1d4ed8;
+    --dark-bg: #0a0e18;
+    --dark-panel: #10152400;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #15130f;
+      --panel: #1c1a15;
+      --text: #f2efe8;
+      --text-soft: #c9c3b4;
+      --border: #38352b;
+      --accent: #7aa2ff;
+      --green: #34d058;
+      --amber: #f0a94e;
+      --red: #ff6b6b;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: ui-serif, Georgia, "Iowan Old Style", "Palatino Linotype", serif;
+    line-height: 1.65;
+    overflow-x: hidden;
+  }
+  .wrap {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 5rem;
+  }
+  h1, h2, h3 {
+    font-family: ui-sans-serif, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+  }
+  h1 { font-size: clamp(2rem, 5vw, 2.9rem); margin: 0 0 1rem; }
+  h2 { font-size: clamp(1.35rem, 3vw, 1.7rem); margin: 3rem 0 0.75rem; }
+  h3 { font-size: 1.1rem; margin: 1.5rem 0 0.5rem; }
+  p { margin: 0 0 1rem; }
+  .lede {
+    font-size: 1.15rem;
+    color: var(--text-soft);
+    max-width: 62ch;
+  }
+  .tag {
+    display: inline-block;
+    font-family: ui-sans-serif, sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-soft);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 0.25rem 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+  .finding {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.5rem 1.75rem;
+    margin: 2rem 0;
+  }
+  .finding h2 { margin-top: 0; }
+  .finding ul { margin: 0; padding-left: 1.2rem; }
+  .finding li { margin-bottom: 0.5rem; }
+  .stat { color: var(--accent); font-weight: 600; font-family: ui-sans-serif, sans-serif; }
+  figure {
+    margin: 1.25rem 0 2.5rem;
+    padding: 0;
+  }
+  figcaption {
+    font-family: ui-sans-serif, sans-serif;
+    font-size: 0.9rem;
+    color: var(--text-soft);
+    margin-top: 0.75rem;
+    max-width: 62ch;
+  }
+  .fig-scroll {
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--panel);
+    padding: 0.5rem;
+  }
+  .fig-scroll svg { display: block; min-width: 560px; }
+  .connectome-section {
+    background: var(--dark-bg);
+    color: #e8e6df;
+    margin: 3rem calc(50% - 50vw) 0;
+    padding: 3rem 1.5rem;
+  }
+  .connectome-section .inner { max-width: 880px; margin: 0 auto; }
+  .connectome-section h2 { color: #f5f3ec; }
+  .connectome-section figcaption { color: #a9a599; }
+  .connectome-section .fig-scroll {
+    background: #0a0e18;
+    border-color: #2a2f42;
+  }
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    font-family: ui-sans-serif, sans-serif;
+    font-size: 0.82rem;
+    color: var(--text-soft);
+    margin-top: 0.5rem;
+  }
+  .connectome-section .legend { color: #a9a599; }
+  .legend span { display: inline-flex; align-items: center; gap: 0.4rem; }
+  .swatch { width: 0.8rem; height: 0.8rem; border-radius: 3px; display: inline-block; }
+  .stories { display: grid; gap: 1.25rem; margin-top: 1rem; }
+  .story {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--red);
+    border-radius: 10px;
+    padding: 1.1rem 1.4rem;
+  }
+  .story h3 { margin-top: 0; }
+  .story .meta {
+    font-family: ui-sans-serif, sans-serif;
+    font-size: 0.78rem;
+    color: var(--text-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  table.drift {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: ui-sans-serif, sans-serif;
+    font-size: 0.88rem;
+  }
+  table.drift th, table.drift td {
+    text-align: left;
+    padding: 0.55rem 0.7rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  table.drift th { font-weight: 600; color: var(--text-soft); }
+  .chip {
+    display: inline-block;
+    border-radius: 999px;
+    padding: 0.12rem 0.65rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #fff;
+  }
+  .chip.preserved { background: var(--green); }
+  .chip.mutated { background: var(--amber); }
+  ul.limits { padding-left: 1.2rem; }
+  ul.limits li { margin-bottom: 0.5rem; }
+  footer {
+    margin-top: 4rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    font-family: ui-sans-serif, sans-serif;
+    font-size: 0.85rem;
+    color: var(--text-soft);
+  }
+  footer a { color: var(--accent); }
+  a { color: var(--accent); }
+
+  /* --- animations --- */
+  .glow-node { animation: pulse 3.4s ease-in-out infinite; transform-origin: center; }
+  .glow-node.n2 { animation-delay: -0.8s; }
+  .glow-node.n3 { animation-delay: -1.6s; }
+  .glow-node.n4 { animation-delay: -2.4s; }
+  @keyframes pulse {
+    0%, 100% { opacity: 0.75; }
+    50% { opacity: 1; }
+  }
+  .traveler {
+    offset-rotate: 0deg;
+    animation: travel linear infinite;
+  }
+  @keyframes travel {
+    from { offset-distance: 0%; }
+    to { offset-distance: 100%; }
+  }
+
+  .tick { opacity: 0; transform: scaleY(0.3); transition: opacity 0.5s ease, transform 0.5s ease; transform-origin: center; }
+  .timeline-section.revealed .tick { opacity: 1; transform: scaleY(1); }
+  .arc-path {
+    stroke-dasharray: 260;
+    stroke-dashoffset: 260;
+    transition: stroke-dashoffset 1.1s ease 0.3s;
+  }
+  .timeline-section.revealed .arc-path { stroke-dashoffset: 0; }
+
+  .strand-seg {
+    stroke-dasharray: 200;
+    stroke-dashoffset: 200;
+    transition: stroke-dashoffset 1.4s ease;
+  }
+  .lineage-section.revealed .strand-seg { stroke-dashoffset: 0; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .glow-node { animation: none; opacity: 0.95; }
+    .traveler { animation: none; offset-distance: 50%; }
+    .tick { transition: none; opacity: 1; transform: none; }
+    .arc-path { transition: none; stroke-dashoffset: 0; }
+    .strand-seg { transition: none; stroke-dashoffset: 0; }
+  }
+
+  @media (max-width: 640px) {
+    .wrap { padding: 1.5rem 1rem 4rem; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <span class="tag">Traced case study, run 01</span>
+  <h1>The Telephone Game</h1>
+  <p class="lede">
+    This is a study of one real build task, traced signal by signal, to see how an instruction changes
+    as it moves from a person's intent, through an orchestrating AI (Claude), to the coding subagents
+    (Codex) that actually write the code. Every message between the layers was logged and every layer's
+    understanding of the task was captured and compared back to the original ask. The short version, most
+    of the instruction survived untouched, two small pieces of it changed at the very first handoff, and
+    three real defects were caught and fixed by the review loop before anything shipped.
+  </p>
+
+  <div class="finding">
+    <h2>The finding, up front</h2>
+    <ul>
+      <li><span class="stat">7 of 9</span> canonical requirements from the original ask survived every hop
+        intact, from the human's words to the merged code.</li>
+      <li>Both requirements that changed did so at the <span class="stat">very first hop</span>, when Claude
+        turned the intent into instructions for the coding subagents. Nothing drifted further after that
+        point, and nothing drifted anywhere else.</li>
+      <li>Three correction loops between Claude and the coding subagent each caught a <span class="stat">real
+        defect</span> that the subagent's own tests had missed, and each one ended in an explicit
+        acceptance before the work moved on.</li>
+    </ul>
+  </div>
+
+  <h2>How the trace works</h2>
+  <p>
+    The human (Asish) wrote one intent message, once, without coaching. Claude read it and decomposed it
+    into instructions for two coding subagents, codex-1 and codex-2. Codex-1 built the extraction engine,
+    codex-2 built the report writer, and Claude reviewed both, sending corrections back when something was
+    wrong. Eighteen signals were logged this way, timestamped and typed, from the first intent message to
+    the final handoff back to the human. Separately, a neutral model with no part in the build read a fixed
+    six question snapshot at each layer (the intent, the decomposition, each subagent's own reading of its
+    instruction, and the finished code) and classified every one of the nine original requirements as
+    preserved, mutated, dropped, or invented at each layer. Nothing here is hand drawn, every figure below
+    comes from that trace and that classification.
+  </p>
+
+  <section class="connectome-section">
+    <div class="inner">
+      <h2>The connectome</h2>
+      <p>Who talked to whom, and how much.</p>
+      <figure>
+        <div class="fig-scroll">
+          <svg viewBox="0 0 760 520" width="760" height="520" role="img"
+               aria-label="Connectome of the four participants, edges weighted by message count">
+            <defs>
+              <filter id="glow" x="-100%" y="-100%" width="300%" height="300%">
+                <feGaussianBlur stdDeviation="6" result="b"/>
+                <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+              <path id="edge-ac" d="M 130 150 L 400 260" fill="none"/>
+              <path id="edge-cc1" d="M 400 260 L 640 140" fill="none"/>
+              <path id="edge-cc2" d="M 400 260 L 640 400" fill="none"/>
+            </defs>
+            <rect x="0" y="0" width="760" height="520" fill="#0a0e18"/>
+
+            <!-- edges: width by real message count, asish-claude 2, claude-codex1 12, claude-codex2 3 -->
+            <line x1="130" y1="150" x2="400" y2="260" stroke="#6366f1" stroke-width="3" opacity="0.55"/>
+            <line x1="400" y1="260" x2="640" y2="140" stroke="#6366f1" stroke-width="11" opacity="0.6"/>
+            <line x1="400" y1="260" x2="640" y2="400" stroke="#6366f1" stroke-width="4.5" opacity="0.55"/>
+
+            <rect x="252" y="196" width="26" height="16" rx="4" fill="#0a0e18" opacity="0.9"/>
+            <text x="265" y="208" font-family="ui-sans-serif,sans-serif" font-size="11" fill="#c7d2fe" text-anchor="middle">2</text>
+            <rect x="507" y="192" width="26" height="16" rx="4" fill="#0a0e18" opacity="0.9"/>
+            <text x="520" y="204" font-family="ui-sans-serif,sans-serif" font-size="11" fill="#c7d2fe" text-anchor="middle">12</text>
+            <rect x="507" y="322" width="26" height="16" rx="4" fill="#0a0e18" opacity="0.9"/>
+            <text x="520" y="334" font-family="ui-sans-serif,sans-serif" font-size="11" fill="#c7d2fe" text-anchor="middle">3</text>
+
+            <!-- travelers: small bright dots moving along each edge -->
+            <circle r="4" fill="#c7d2fe">
+              <animateMotion dur="2.6s" repeatCount="indefinite" path="M 130 150 L 400 260"/>
+            </circle>
+            <circle r="4" fill="#93c5fd">
+              <animateMotion dur="1.4s" repeatCount="indefinite" path="M 400 260 L 640 140"/>
+            </circle>
+            <circle r="4" fill="#c4b5fd">
+              <animateMotion dur="2.1s" repeatCount="indefinite" path="M 400 260 L 640 400"/>
+            </circle>
+
+            <!-- nodes -->
+            <g class="glow-node n1">
+              <circle cx="130" cy="150" r="30" fill="#f59e0b" opacity="0.9" filter="url(#glow)"/>
+              <text x="130" y="106" font-family="ui-sans-serif,sans-serif" font-size="15" font-weight="bold" fill="#f9fafb" text-anchor="middle">asish</text>
+              <text x="130" y="155" font-family="ui-sans-serif,sans-serif" font-size="12" font-weight="bold" fill="#0a0e18" text-anchor="middle">2</text>
+            </g>
+            <g class="glow-node n2">
+              <circle cx="400" cy="260" r="46" fill="#38bdf8" opacity="0.9" filter="url(#glow)"/>
+              <text x="400" y="196" font-family="ui-sans-serif,sans-serif" font-size="16" font-weight="bold" fill="#f9fafb" text-anchor="middle">claude</text>
+              <text x="400" y="266" font-family="ui-sans-serif,sans-serif" font-size="13" font-weight="bold" fill="#0a0e18" text-anchor="middle">17</text>
+            </g>
+            <g class="glow-node n3">
+              <circle cx="640" cy="140" r="34" fill="#22c55e" opacity="0.9" filter="url(#glow)"/>
+              <text x="640" y="90" font-family="ui-sans-serif,sans-serif" font-size="15" font-weight="bold" fill="#f9fafb" text-anchor="middle">codex-1</text>
+              <text x="640" y="145" font-family="ui-sans-serif,sans-serif" font-size="12" font-weight="bold" fill="#0a0e18" text-anchor="middle">12</text>
+            </g>
+            <g class="glow-node n4">
+              <circle cx="640" cy="400" r="26" fill="#a78bfa" opacity="0.9" filter="url(#glow)"/>
+              <text x="640" y="358" font-family="ui-sans-serif,sans-serif" font-size="15" font-weight="bold" fill="#f9fafb" text-anchor="middle">codex-2</text>
+              <text x="640" y="405" font-family="ui-sans-serif,sans-serif" font-size="12" font-weight="bold" fill="#0a0e18" text-anchor="middle">3</text>
+            </g>
+          </svg>
+        </div>
+        <figcaption>
+          Each node is a participant, sized by how many logged signals touch it. Each edge is the count of
+          real messages between that pair across all 18 signals, asish and claude exchanged 2, claude and
+          codex-1 exchanged 12 (the long correction loop lives here), claude and codex-2 exchanged 3. The
+          traveling dots are decorative pacing, not additional data, the number printed on each edge is the
+          real count.
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <h2>The firing timeline</h2>
+  <div class="timeline-section" id="timeline-section">
+    <figure>
+      <div class="fig-scroll">
+        <svg viewBox="0 0 900 340" width="900" height="340" role="img"
+             aria-label="Timeline of all 18 signals by actor and sequence, with correction arcs">
+          <!-- row baselines -->
+          <line x1="90" y1="70" x2="860" y2="70" stroke="#e7e3da" stroke-width="1"/>
+          <line x1="90" y1="140" x2="860" y2="140" stroke="#e7e3da" stroke-width="1"/>
+          <line x1="90" y1="210" x2="860" y2="210" stroke="#e7e3da" stroke-width="1"/>
+          <line x1="90" y1="280" x2="860" y2="280" stroke="#e7e3da" stroke-width="1"/>
+          <text x="78" y="74" font-family="ui-sans-serif,sans-serif" font-size="12" font-weight="bold" text-anchor="end" fill="currentColor">asish</text>
+          <text x="78" y="144" font-family="ui-sans-serif,sans-serif" font-size="12" font-weight="bold" text-anchor="end" fill="currentColor">claude</text>
+          <text x="78" y="214" font-family="ui-sans-serif,sans-serif" font-size="12" font-weight="bold" text-anchor="end" fill="currentColor">codex-1</text>
+          <text x="78" y="284" font-family="ui-sans-serif,sans-serif" font-size="12" font-weight="bold" text-anchor="end" fill="currentColor">codex-2</text>
+
+          <!-- correction -> resubmission arcs, seq 6->7, 9->10, 15->16, all on codex-1 row (y=210) -->
+          <path class="arc-path" d="M 320 210 Q 342 172 364 210" stroke="#dc2626" stroke-width="1.6" fill="none"/>
+          <path class="arc-path" d="M 452 210 Q 474 172 496 210" stroke="#dc2626" stroke-width="1.6" fill="none"/>
+          <path class="arc-path" d="M 716 210 Q 738 172 760 210" stroke="#dc2626" stroke-width="1.6" fill="none"/>
+
+          <!-- ticks, one per seq 1..18, 44px apart starting x=90 -->
+          <!-- seq1 asish->claude intent -->
+          <line class="tick" x1="90" y1="56" x2="90" y2="84" stroke="#3b82f6" stroke-width="3"/>
+          <text x="90" y="98" font-size="8" font-family="ui-sans-serif,sans-serif" text-anchor="middle" fill="currentColor">1</text>
+          <!-- seq2 claude decomposition -->
+          <line class="tick" x1="144" y1="128" x2="144" y2="152" stroke="#8b5cf6" stroke-width="2.2"/>
+          <text x="144" y="168" font-size="8" font-family="ui-sans-serif,sans-serif" text-anchor="middle" fill="currentColor">2</text>
+          <!-- seq3 claude->codex-1 instruction -->
+          <line class="tick" x1="188" y1="128" x2="188" y2="152" stroke="#0ea5e9" stroke-width="2.2"/>
+          <text x="188" y="168" font-size="8" font-family="ui-sans-serif,sans-serif" text-anchor="middle" fill="currentColor">3</text>
+          <!-- seq4 codex1->claude artifact -->
+          <line class="tick" x1="232" y1="198" x2="232" y2="222" stroke="#22c55e" stroke-width="2.2"/>
+          <text x="232" y="238" font-size="8" font-family="ui-sans-serif,sans-serif" text-anchor="middle" fill="currentColor">4</text>
+          <!-- seq5 claude->codex1 review (emphasized) -->
+          <line class="tick" x1="276" y1="184" x2="276" y2="236" stroke="#f59e0b" stroke-width="3.4"/>
+          <circle class="tick" cx="276" cy="180" r="3" fill="#f59e0b"/>
+          <text x="276" y="252" font-size="8" font-family="ui-sans-serif,sans-serif" text-anchor="middle" fill="currentColor">5</text>
+          <!-- seq6 claude->codex1 correction (emphasized) -->
+          <line class="tick" x1="320" y1="184" x2="320" y2="236" stroke="#dc2626" stroke-width="3.4"/>
+          <circle class="tick" cx="320" cy="180" r="3" fill="#dc2626"/>
+          <text x="320" y="252" font-size="8" font-family="ui-sans-serif,sans-serif" text-anchor="middle" fill="currentColor">6</text>
+          <!-- seq7 codex1->claude resubmission -->
+          <line class="tick" x1="364" y1="198" x2="364" y2="222" stroke="#14b8a6" stroke-width="2.2"/>
+          <text x="364" y="238" font-size="8" font-family="ui-sans-serif,sans-serif" text-anchor="middle" fill="currentColor">7</text>
+          <!-- seq8 claude->codex1 review -->
+          <line class="tick" x1="408" y1="184" x2="408" y2="236" stroke="#f59e0b" stroke-width="3.4"/>
+          <circle class="tick" cx="408" cy="180" r="3" fill="#f59e0b"/>
+          <text x="408" y="252" font-size="8" font-family="ui-sans-serif,sans-serif" text-anchor="middle" fill="currentColor">8</text>
+          <!-- seq9 claude->codex1 correction -->
+          <line class="tick" x1="452" y1="184" x2="452" y2="236" stroke="#dc2626" stroke-width="3.4"/>
+          <circle class="tick" cx="452" cy="180" r="3" fill="#dc2626"/>
+          <text x="452" y="252" font-size="8" font-family="ui-sans-serif,sans-serif" text-anchor="middle" fill="currentColor">9</text>
+          <!-- seq10 codex1->claude resubmission -->
+          <line class="tick" x1="496" y1="198" x2="496" y2="222" stroke="#14b8a6" stroke-width="2.2"/>
+          <text x="496" y="238" font-size="8" font-family="ui-sans-serif,sans-serif" text-anchor="middle" fill="currentColor">10</text>
+          <!-- seq11 claude->codex1 acceptance -->
+          <line class="tick" x1="540" y1="198" x2="540" y2="222" stroke="#22c55e" stroke-width="2.2"/>
+          <text x="540" y="238" font-size="8" font-family="ui-sans-serif,sans-serif" text-anchor="middle" fill="currentColor">11</text>
+          <!-- seq12 claude->codex2 instruction -->
+          <line class="tick" x1="584" y1="268" x2="584" y2="292" stroke="#0ea5e9" stroke-width="2.2"/>
+          <text x="584" y="308" font-size="8" font-family="ui-sans-serif,sans-serif" text-anchor="middle" fill="currentColor">12</text>
+          <!-- seq13 codex2->claude artifact -->
+          <line class="tick" x1="628" y1="268" x2="628" y2="292" stroke="#22c55e" stroke-width="2.2"/>
+          <text x="628" y="308" font-size="8" font-family="ui-sans-serif,sans-serif" text-anchor="middle" fill="currentColor">13</text>
+          <!-- seq14 claude->codex2 review -->
+          <line class="tick" x1="672" y1="254" x2="672" y2="306" stroke="#f59e0b" stroke-width="3.4"/>
+          <circle class="tick" cx="672" cy="250" r="3" fill="#f59e0b"/>
+          <text x="672" y="322" font-size="8" font-family="ui-sans-serif,sans-serif" text-anchor="middle" fill="currentColor">14</text>
+          <!-- seq15 claude->codex1 correction -->
+          <line class="tick" x1="716" y1="184" x2="716" y2="236" stroke="#dc2626" stroke-width="3.4"/>
+          <circle class="tick" cx="716" cy="180" r="3" fill="#dc2626"/>
+          <text x="716" y="252" font-size="8" font-family="ui-sans-serif,sans-serif" text-anchor="middle" fill="currentColor">15</text>
+          <!-- seq16 codex1->claude resubmission -->
+          <line class="tick" x1="760" y1="198" x2="760" y2="222" stroke="#14b8a6" stroke-width="2.2"/>
+          <text x="760" y="238" font-size="8" font-family="ui-sans-serif,sans-serif" text-anchor="middle" fill="currentColor">16</text>
+          <!-- seq17 claude->codex1 acceptance -->
+          <line class="tick" x1="804" y1="198" x2="804" y2="222" stroke="#22c55e" stroke-width="2.2"/>
+          <text x="804" y="238" font-size="8" font-family="ui-sans-serif,sans-serif" text-anchor="middle" fill="currentColor">17</text>
+          <!-- seq18 claude->asish handoff -->
+          <line class="tick" x1="848" y1="56" x2="848" y2="84" stroke="#6366f1" stroke-width="2.2"/>
+          <text x="848" y="98" font-size="8" font-family="ui-sans-serif,sans-serif" text-anchor="middle" fill="currentColor">18</text>
+        </svg>
+      </div>
+      <figcaption>
+        One row per participant, one tick per logged signal, left to right in sequence order. Amber ticks
+        are reviews, red ticks are corrections, the red arcs connect each correction to the resubmission
+        that answered it (seq 6 to 7, seq 9 to 10, seq 15 to 16). Scroll this section into view to see the
+        ticks and arcs draw in, the order they draw in is the real order the signals fired.
+      </figcaption>
+    </figure>
+  </div>
+
+  <h2>The lineage flow</h2>
+  <div class="lineage-section" id="lineage-section">
+    <figure>
+      <div class="fig-scroll">
+        <svg viewBox="0 0 760 420" width="760" height="420" role="img"
+             aria-label="Lineage of all nine requirements from intent through decomposition, subagents, and code">
+          <text x="20" y="26" font-family="ui-sans-serif,sans-serif" font-size="13" font-weight="bold" fill="currentColor">Intent (S0)</text>
+          <text x="290" y="26" font-family="ui-sans-serif,sans-serif" font-size="13" font-weight="bold" fill="currentColor">Decomposition (S1)</text>
+          <text x="520" y="26" font-family="ui-sans-serif,sans-serif" font-size="13" font-weight="bold" fill="currentColor">Subagents (S2)</text>
+          <text x="690" y="26" font-family="ui-sans-serif,sans-serif" font-size="13" font-weight="bold" fill="currentColor">Code (S3)</text>
+
+          <!-- 9 rows, y = 50 + i*38 -->
+          <!-- R1 Platform open, mutated at S1, bends -->
+          <text x="20" y="54" font-family="ui-sans-serif,sans-serif" font-size="11" fill="currentColor">R1 platform open</text>
+          <path class="strand-seg" d="M 130 50 L 220 50" stroke="#16a34a" stroke-width="7" fill="none" stroke-linecap="round"/>
+          <path class="strand-seg" d="M 220 50 Q 260 50 300 66" stroke="#b45309" stroke-width="7" fill="none" stroke-linecap="round"/>
+          <path class="strand-seg" d="M 300 66 L 540 66" stroke="#b45309" stroke-width="7" fill="none" stroke-linecap="round"/>
+          <path class="strand-seg" d="M 540 66 L 700 66" stroke="#b45309" stroke-width="7" fill="none" stroke-linecap="round"/>
+
+          <!-- R2 URL input, preserved -->
+          <text x="20" y="92" font-family="ui-sans-serif,sans-serif" font-size="11" fill="currentColor">R2 URL input</text>
+          <path class="strand-seg" d="M 130 88 L 700 88" stroke="#16a34a" stroke-width="7" fill="none" stroke-linecap="round"/>
+
+          <!-- R3 look at live site + CSS, preserved -->
+          <text x="20" y="130" font-family="ui-sans-serif,sans-serif" font-size="11" fill="currentColor">R3 read live site + CSS</text>
+          <path class="strand-seg" d="M 130 126 L 700 126" stroke="#16a34a" stroke-width="7" fill="none" stroke-linecap="round"/>
+
+          <!-- R4 output file design.md, mutated at S1, changes color -->
+          <text x="20" y="168" font-family="ui-sans-serif,sans-serif" font-size="11" fill="currentColor">R4 output file design.md</text>
+          <path class="strand-seg" d="M 130 164 L 220 164" stroke="#16a34a" stroke-width="7" fill="none" stroke-linecap="round"/>
+          <path class="strand-seg" d="M 220 164 Q 260 164 300 178" stroke="#b45309" stroke-width="7" fill="none" stroke-linecap="round"/>
+          <path class="strand-seg" d="M 300 178 L 540 178" stroke="#b45309" stroke-width="7" fill="none" stroke-linecap="round"/>
+          <path class="strand-seg" d="M 540 178 L 700 178" stroke="#b45309" stroke-width="7" fill="none" stroke-linecap="round"/>
+
+          <!-- R5 exhaustive detail, preserved -->
+          <text x="20" y="206" font-family="ui-sans-serif,sans-serif" font-size="11" fill="currentColor">R5 exhaustive detail</text>
+          <path class="strand-seg" d="M 130 202 L 700 202" stroke="#16a34a" stroke-width="7" fill="none" stroke-linecap="round"/>
+
+          <!-- R6 theme colors format, preserved -->
+          <text x="20" y="244" font-family="ui-sans-serif,sans-serif" font-size="11" fill="currentColor">R6 theme, colors, format</text>
+          <path class="strand-seg" d="M 130 240 L 700 240" stroke="#16a34a" stroke-width="7" fill="none" stroke-linecap="round"/>
+          <polygon points="612,240 622,232 632,240 622,248" fill="currentColor"/>
+          <text x="622" y="264" font-family="ui-sans-serif,sans-serif" font-size="8" fill="currentColor" text-anchor="middle">seq 14-15</text>
+
+          <!-- R7 CSS animations + backgrounds, preserved -->
+          <text x="20" y="282" font-family="ui-sans-serif,sans-serif" font-size="11" fill="currentColor">R7 CSS animations + bg</text>
+          <path class="strand-seg" d="M 130 278 L 700 278" stroke="#16a34a" stroke-width="7" fill="none" stroke-linecap="round"/>
+          <polygon points="462,278 472,270 482,278 472,286" fill="currentColor"/>
+          <text x="472" y="302" font-family="ui-sans-serif,sans-serif" font-size="8" fill="currentColor" text-anchor="middle">seq 5-6</text>
+
+          <!-- R8 inline-encoded elements, preserved -->
+          <text x="20" y="320" font-family="ui-sans-serif,sans-serif" font-size="11" fill="currentColor">R8 inline-encoded elements</text>
+          <path class="strand-seg" d="M 130 316 L 700 316" stroke="#16a34a" stroke-width="7" fill="none" stroke-linecap="round"/>
+
+          <!-- R9 Shopify example, preserved -->
+          <text x="20" y="358" font-family="ui-sans-serif,sans-serif" font-size="11" fill="currentColor">R9 Shopify example input</text>
+          <path class="strand-seg" d="M 130 354 L 700 354" stroke="#16a34a" stroke-width="7" fill="none" stroke-linecap="round"/>
+          <polygon points="542,354 552,346 562,354 552,362" fill="currentColor"/>
+          <text x="552" y="378" font-family="ui-sans-serif,sans-serif" font-size="8" fill="currentColor" text-anchor="middle">seq 8-9</text>
+
+          <text x="20" y="404" font-family="ui-sans-serif,sans-serif" font-size="10.5" fill="currentColor">
+            <tspan fill="#16a34a" font-weight="bold">green</tspan> = preserved straight through,
+            <tspan fill="#b45309" font-weight="bold">amber</tspan> = mutated at S1,
+            diamonds mark a correction loop that protected the requirement downstream.
+          </text>
+        </svg>
+      </div>
+      <figcaption>
+        Each strand is one of the nine requirements from the original ask, followed from the intent (S0)
+        through Claude's decomposition (S1), the subagents' own reading of their instructions (S2), to the
+        finished code (S3). Seven strands run straight and green the whole way. Two bend and turn amber
+        exactly at S1, R1 (the platform was left open, "web or desktop app, whatever is feasible", and
+        Claude's decomposition narrowed it straight to a command line tool without flagging it as a choice)
+        and R4 (the file name "design.md" became "DESIGN.md" at the same step). Neither drifted any further
+        after that first hop. The diamonds mark where a correction loop, described below, protected a
+        requirement from a defect introduced during implementation.
+      </figcaption>
+    </figure>
+  </div>
+
+  <h2>The drift table</h2>
+  <figure>
+    <div class="fig-scroll">
+      <table class="drift">
+        <thead>
+          <tr><th>Requirement</th><th>S1, decomposition</th><th>S2, subagents</th><th>S3, code</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>R1, platform open</td><td><span class="chip mutated">mutated</span></td><td><span class="chip mutated">mutated</span></td><td><span class="chip mutated">mutated</span></td></tr>
+          <tr><td>R2, URL input</td><td><span class="chip preserved">preserved</span></td><td><span class="chip preserved">preserved</span></td><td><span class="chip preserved">preserved</span></td></tr>
+          <tr><td>R3, read live site and CSS</td><td><span class="chip preserved">preserved</span></td><td><span class="chip preserved">preserved</span></td><td><span class="chip preserved">preserved</span></td></tr>
+          <tr><td>R4, output file design.md</td><td><span class="chip mutated">mutated</span></td><td><span class="chip mutated">mutated</span></td><td><span class="chip mutated">mutated</span></td></tr>
+          <tr><td>R5, exhaustive detail</td><td><span class="chip preserved">preserved</span></td><td><span class="chip preserved">preserved</span></td><td><span class="chip preserved">preserved</span></td></tr>
+          <tr><td>R6, theme, colors, format</td><td><span class="chip preserved">preserved</span></td><td><span class="chip preserved">preserved</span></td><td><span class="chip preserved">preserved</span></td></tr>
+          <tr><td>R7, CSS animations and backgrounds</td><td><span class="chip preserved">preserved</span></td><td><span class="chip preserved">preserved</span></td><td><span class="chip preserved">preserved</span></td></tr>
+          <tr><td>R8, inline-encoded elements</td><td><span class="chip preserved">preserved</span></td><td><span class="chip preserved">preserved</span></td><td><span class="chip preserved">preserved</span></td></tr>
+          <tr><td>R9, Shopify example input</td><td><span class="chip preserved">preserved</span></td><td><span class="chip preserved">preserved</span></td><td><span class="chip preserved">preserved</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <figcaption>
+      The same nine requirements, read straight across. R1 and R4 are the only rows that ever leave the
+      preserved column, and both leave it at the first column, S1, and never come back.
+    </figcaption>
+  </figure>
+
+  <h2>Three correction stories</h2>
+  <p>
+    The review loop between Claude and codex-1 fired three times. Each time, Claude's acceptance run found
+    something the subagent's own tests had passed anyway, sent a correction, and got a fix back before
+    accepting the work.
+  </p>
+  <div class="stories">
+    <div class="story">
+      <div class="meta">seq 5 to 7, keyframes lost to a broken CSS parser</div>
+      <h3>Zero keyframes, despite forty animations in use</h3>
+      <p>
+        Codex-1 reported four out of four unit tests passing. Claude's own acceptance run on the real
+        Shopify page told a different story, zero CSS keyframes were captured even though the page used
+        forty named animations, and the section outline came back as a flat two hundred and twenty item
+        list instead of a readable top level structure. The correction asked for a token aware CSS parser
+        and a top level outline with eight to twenty five entries. Codex-1 rewrote the parser, all five
+        tests passed, and it came back for another look.
+      </p>
+    </div>
+    <div class="story">
+      <div class="meta">seq 8 to 10, an outline regression on the simple page</div>
+      <h3>Shopify fixed, example.com went empty</h3>
+      <p>
+        The rewritten parser passed on Shopify, fourteen keyframes, no unmatched entries, seventeen
+        sections. But the second, simpler test page, example.com, now returned zero of one sections, an
+        outline regression the new logic had introduced while fixing the first problem. The correction
+        asked for a fallback, if the strict outline logic finds nothing, fall back to the best available
+        candidates rather than returning empty. Codex-1 added the fallback with its own unit test, six of
+        six tests passed.
+      </p>
+    </div>
+    <div class="story">
+      <div class="meta">seq 14 to 16, non visual markup leaking into the color report</div>
+      <h3>head, meta, and title showing up as color evidence</h3>
+      <p>
+        By this point codex-2's report writer was done, ten of ten tests passing, and the end to end run
+        looked exhaustive and correct. But Claude's review of the color evidence in the generated report
+        noticed entries coming from elements that are never rendered, head, meta, and title tags. The
+        correction went back to codex-1, exclude non rendered elements (head, meta, title, script, style,
+        link) from computed style inspection. The fix landed, eleven of eleven tests passed, and a fresh
+        capture of Shopify confirmed no non visual selectors remained in the color evidence.
+      </p>
+    </div>
+  </div>
+
+  <h2>Limitations</h2>
+  <ul class="limits">
+    <li>This is one run of one build task. Nothing here claims to generalize to other tasks, other
+      supervising models, or other coding agents.</li>
+    <li>The requirement classification was done by a single neutral model reading fixed snapshots, not by
+      multiple independent raters, so the classification itself carries whatever judgment that one model
+      brought to borderline calls, such as reading R8's "inline-encoded elements" as inline SVGs
+      specifically.</li>
+    <li>The trace captures signals between layers, not every private reasoning step inside Claude or
+      inside either Codex subagent, so drift that never surfaced as a logged signal would not appear here.</li>
+    <li>If a second run showed more drift, or drift recovered less cleanly, that would be the finding for
+      that run, this page only reports what run 01 actually shows.</li>
+  </ul>
+
+  <footer>
+    <p>
+      Source trace, snapshots, drift classification, and the scripts that generated these figures are in
+      the project repository. <a href="#repo">View the repository</a>.
+    </p>
+  </footer>
+</div>
+
+<script>
+(function () {
+  var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var sections = [
+    document.getElementById('timeline-section'),
+    document.getElementById('lineage-section')
+  ];
+  if (reduced || !('IntersectionObserver' in window)) {
+    sections.forEach(function (s) { if (s) s.classList.add('revealed'); });
+    return;
+  }
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('revealed');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.25 });
+  sections.forEach(function (s) { if (s) io.observe(s); });
+})();
+</script>
+</body>
+</html>
