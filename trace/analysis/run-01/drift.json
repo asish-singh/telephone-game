@@ -1,0 +1,102 @@
+{
+  "requirements": [
+    {
+      "id": "R1",
+      "name": "Platform open",
+      "s0_text": "a web or desktop app (whatever is feasible)",
+      "fates": { "S1": "mutated", "S2": "mutated", "S3": "mutated" },
+      "mutation_notes": "S1 (Claude decomposition) narrows the open platform choice directly to 'A Node.js CLI tool' (S1 L3), never presenting it as a decision to confirm. S2-codex-1 (L3) and S2-codex-2 (L3) inherit 'CLI' without question. S3 confirms 'A Node.js CLI tool named designdna' (S3 L3) with a fixed, non-configurable viewport (S3 L41, L96). Never revisited or restored at any later layer."
+    },
+    {
+      "id": "R2",
+      "name": "URL input",
+      "s0_text": "Take a URL as input.",
+      "fates": { "S1": "preserved", "S2": "preserved", "S3": "preserved" },
+      "mutation_notes": "Preserved throughout (S1 L4, L10; S2-codex-1 L4, L10; S3 L9-L13). S3 adds an http/https protocol restriction (S3 L12, L16) as a refinement, not a scope change, since S0 never addressed other protocols."
+    },
+    {
+      "id": "R3",
+      "name": "Look at the live site, CSS and code",
+      "s0_text": "look at the website in browswer or anyhow and its css and all code",
+      "fates": { "S1": "preserved", "S2": "preserved", "S3": "preserved" },
+      "mutation_notes": "Implemented via headless Chromium/Playwright reading computed styles and all reachable stylesheets (S1 L3, L5; S2-codex-1 L5, L18; S3 L9, L18, L24)."
+    },
+    {
+      "id": "R4",
+      "name": "Output file named design.md",
+      "s0_text": "a exhaustive detailed design.md file",
+      "fates": { "S1": "mutated", "S2": "mutated", "S3": "mutated" },
+      "mutation_notes": "S0 names the file 'design.md' (lowercase, S0 L9, L15). Starting at S1 (L3, L17, L22) every layer renames it 'DESIGN.md' (S2-codex-2 L3, L7; S3 L3, L9, L15). Introduced at the decomposition step and never reconsidered."
+    },
+    {
+      "id": "R5",
+      "name": "Exhaustive, replicate-grade detail",
+      "s0_text": "exhaustive / great detail / so that any ai agent can understand and replicate it",
+      "fates": { "S1": "preserved", "S2": "preserved", "S3": "preserved" },
+      "mutation_notes": "S1 L3 ('exhaustive, agent readable DESIGN.md'); S2-codex-2 L2, L8, L24-25 (replication checklist); S3 L3, L25, L31 (replication checklist, fidelity notes)."
+    },
+    {
+      "id": "R6",
+      "name": "Theme, colors, format",
+      "s0_text": "describe the theme and colours and format in detail",
+      "fates": { "S1": "preserved", "S2": "preserved", "S3": "preserved" },
+      "mutation_notes": "S1 L18-19 (theme summary, colors table, typography table); S2-codex-2 L7-11; S3 L19-23, L31 (design tokens chapter). Detail level grows each layer but meaning is intact."
+    },
+    {
+      "id": "R7",
+      "name": "CSS animations and backgrounds",
+      "s0_text": "also the css animation and backgrounds",
+      "fates": { "S1": "preserved", "S2": "preserved", "S3": "preserved" },
+      "mutation_notes": "Elevated to 'the flagship chapter' from S1 L21 onward, carried into S2-codex-2 L14-23 and S3 L25-26, L31. Faithful, expanded carry-through."
+    },
+    {
+      "id": "R8",
+      "name": "Every inline-encoded element",
+      "s0_text": "whatever elements the website encodes in line in great detail",
+      "fates": { "S1": "preserved", "S2": "preserved", "S3": "preserved" },
+      "mutation_notes": "Realized as the inlineSvgs field (S1 L16, L18-19; S2-codex-1 L18-19; S3 L27). S0's broad phrase is narrowed to inline <svg> elements specifically, the most natural literal reading of 'elements ... in line', applied consistently at every layer, so judged preserved rather than mutated."
+    },
+    {
+      "id": "R9",
+      "name": "Shopify winter2026 as example input",
+      "s0_text": "https://www.shopify.com/editions/winter2026 is a example input from a user",
+      "fates": { "S1": "preserved", "S2": "preserved", "S3": "preserved" },
+      "mutation_notes": "S1 L20 ('Test against https://www.shopify.com/editions/winter2026'); S2-codex-1 L24, L30; S3 L27 (scripts/smoke.js target), S3 acceptance/demo artifact examples/DESIGN-shopify.md."
+    }
+  ],
+  "invented": [
+    { "layer": "S1", "text": "Two-agent split into an extraction engine (capture.json) and a separate report writer (DESIGN.md), tool named 'designdna' (S1 L3)." },
+    { "layer": "S1", "text": "example.com added as a second, simple test target alongside the Shopify URL (S1 L20, L25)." },
+    { "layer": "S1", "text": "A published JSON schema contract, docs/capture-schema.md (S1 L19, L23)." },
+    { "layer": "S1", "text": "Tooling constraints: plain Node.js ES modules, no TypeScript, no framework beyond Playwright, no dependencies for the report writer, no AI calls in the report writer (S1 L40-46)." },
+    { "layer": "S1", "text": "Specific CLI surface: --json capture.json and -o DESIGN.md, combinable (S1 L8, L23)." },
+    { "layer": "S1", "text": "Unit-test obligation (test/report.test.js) and an npm test gate (S1 L27-28, L33-34)." },
+    { "layer": "S1", "text": "Generated demonstration artifact examples/DESIGN-shopify.md (S1 L29, L35)." },
+    { "layer": "S1", "text": "Process constraints on coding agents: 'commit nothing,' 'do not modify src/extract.js' (S1 L42-43)." },
+    { "layer": "S2", "text": "No requirement-bearing inventions beyond S1; S2-codex-1 and S2-codex-2 restate S1's instruction at similar or greater fidelity, new wording only." },
+    { "layer": "S3", "text": "Versioned JSON contract schemaVersion '1.0.0' with a hard RangeError for any other version (S3 L26, L32, L100)." },
+    { "layer": "S3", "text": "Fixed, non-configurable capture conditions: 1440x900 viewport, device scale factor 1, light color scheme, en-US locale, non-reduced motion (S3 L9, L41, L96)." },
+    { "layer": "S3", "text": "Numeric limits never specified upstream: MAX_EXAMPLE_SELECTORS=6, MAX_STYLESHEETS=500, MAX_STYLESHEET_BYTES=20MiB, navigation timeout 60s, network-idle timeout 10s, extra settle wait 1.5s, web-fonts-ready race 8s, stylesheet fetch timeout 30s, error truncation at 4000 chars, maxSections=50 (S3 L44-51)." },
+    { "layer": "S3", "text": "scripts/smoke.js as a standing live smoke test with its own exit-code contract (S3 L8, L33, L86, L108)." },
+    { "layer": "S3", "text": "Shadow-DOM traversal and host >>> inner selector notation for open shadow roots (S3 L27, L80, L98)." },
+    { "layer": "S3", "text": "IntersectionObserver/canvas instrumentation injected before page scripts run, for scroll-trigger and hero-canvas detection (S3 L17)." },
+    { "layer": "S3", "text": "CLI argument-parsing edge behavior: rejecting unknown flags, --help/-h, specific error strings (S3 L10, L87)." }
+  ],
+  "recoveries": [
+    {
+      "seq": "5-6",
+      "requirement": "R7, R6/R8",
+      "note": "seq 5: supervisor review found 0 keyframes captured despite 40 named animations in use, and a 220-item section list instead of a top-level outline. seq 6: correction instructs codex-1 to fix CSS parser resilience so all keyframes are captured, and make the section outline top level (8-25 entries). Restores R7's animation capture and protects the top-level readability R6/R8 depend on."
+    },
+    {
+      "seq": "8-9",
+      "requirement": "R9, R5",
+      "note": "seq 8: review finds Shopify acceptance passes (14 keyframes, 17 sections) but the example.com outline regressed to 0 of 1 sections. seq 9: correction requires the outline to fall back to best candidates instead of returning empty on simple pages. Protects exhaustiveness (R5) on the simpler of the two required test targets."
+    },
+    {
+      "seq": "14-15",
+      "requirement": "R6",
+      "note": "seq 14: E2E review finds DESIGN.md exhaustive and correct but color evidence includes non-visual selectors (head, meta, title) leaking from the capture. seq 15: correction to codex-1 to exclude non-rendered elements from computed-style inspection. Protects R6's accuracy for describing the theme and colors."
+    }
+  ]
+}
