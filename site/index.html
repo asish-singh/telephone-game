@@ -179,6 +179,26 @@
   }
   footer a { color: var(--accent); }
   a { color: var(--accent); }
+  .rowline { stroke: var(--border); }
+  .byline {
+    font-family: ui-sans-serif, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+    font-size: 0.9rem;
+    color: var(--text-soft);
+    margin: -0.25rem 0 2rem;
+  }
+  .kicker {
+    display: block;
+    font-family: ui-sans-serif, sans-serif;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.35rem;
+  }
+  h2 { padding-top: 0.5rem; }
+  .wrap > h2, .lineage-section h2, .timeline-section h2 { border-top: 1px solid var(--border); margin-top: 3.5rem; padding-top: 2rem; }
+  .finding { border-left: 4px solid var(--accent); }
 
   /* --- animations --- */
   .glow-node { animation: pulse 3.4s ease-in-out infinite; transform-origin: center; }
@@ -232,6 +252,7 @@
 
   <span class="tag">Traced case study, run 01</span>
   <h1>The Telephone Game</h1>
+  <p class="byline">Asish Singh · July 2026 · every figure generated from the real 18 signal trace</p>
   <p class="lede">
     This is a study of one real build task, traced signal by signal, to see how an instruction changes
     as it moves from a person's intent, through an orchestrating AI (Claude), to the coding subagents
@@ -255,7 +276,7 @@
     </ul>
   </div>
 
-  <h2>How the trace works</h2>
+  <h2><span class="kicker">Method</span>How the trace works</h2>
   <p>
     The human (Asish) wrote one intent message, once, without coaching. Claude read it and decomposed it
     into instructions for two coding subagents, codex-1 and codex-2. Codex-1 built the extraction engine,
@@ -270,7 +291,7 @@
 
   <section class="connectome-section">
     <div class="inner">
-      <h2>The connectome</h2>
+      <h2><span class="kicker">Figure 1</span>The connectome</h2>
       <p>Who talked to whom, and how much.</p>
       <figure>
         <div class="fig-scroll">
@@ -281,7 +302,7 @@
                 <feGaussianBlur stdDeviation="6" result="b"/>
                 <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
               </filter>
-              <path id="edge-ac" d="M 130 150 L 400 260" fill="none"/>
+              <path id="edge-ac" d="M 168 150 L 400 260" fill="none"/>
               <path id="edge-cc1" d="M 400 260 L 640 140" fill="none"/>
               <path id="edge-cc2" d="M 400 260 L 640 400" fill="none"/>
             </defs>
@@ -344,17 +365,17 @@
     </div>
   </section>
 
-  <h2>The firing timeline</h2>
+  <h2><span class="kicker">Figure 2</span>The firing timeline</h2>
   <div class="timeline-section" id="timeline-section">
     <figure>
       <div class="fig-scroll">
         <svg viewBox="0 0 900 340" width="900" height="340" role="img"
              aria-label="Timeline of all 18 signals by actor and sequence, with correction arcs">
           <!-- row baselines -->
-          <line x1="90" y1="70" x2="860" y2="70" stroke="#e7e3da" stroke-width="1"/>
-          <line x1="90" y1="140" x2="860" y2="140" stroke="#e7e3da" stroke-width="1"/>
-          <line x1="90" y1="210" x2="860" y2="210" stroke="#e7e3da" stroke-width="1"/>
-          <line x1="90" y1="280" x2="860" y2="280" stroke="#e7e3da" stroke-width="1"/>
+          <line class="rowline" x1="90" y1="70" x2="860" y2="70" stroke-width="1"/>
+          <line class="rowline" x1="90" y1="140" x2="860" y2="140" stroke-width="1"/>
+          <line class="rowline" x1="90" y1="210" x2="860" y2="210" stroke-width="1"/>
+          <line class="rowline" x1="90" y1="280" x2="860" y2="280" stroke-width="1"/>
           <text x="78" y="74" font-family="ui-sans-serif,sans-serif" font-size="12" font-weight="bold" text-anchor="end" fill="currentColor">asish</text>
           <text x="78" y="144" font-family="ui-sans-serif,sans-serif" font-size="12" font-weight="bold" text-anchor="end" fill="currentColor">claude</text>
           <text x="78" y="214" font-family="ui-sans-serif,sans-serif" font-size="12" font-weight="bold" text-anchor="end" fill="currentColor">codex-1</text>
@@ -437,7 +458,7 @@
     </figure>
   </div>
 
-  <h2>The lineage flow</h2>
+  <h2><span class="kicker">Figure 3</span>The lineage flow</h2>
   <div class="lineage-section" id="lineage-section">
     <figure>
       <div class="fig-scroll">
@@ -451,49 +472,49 @@
           <!-- 9 rows, y = 50 + i*38 -->
           <!-- R1 Platform open, mutated at S1, bends -->
           <text x="20" y="54" font-family="ui-sans-serif,sans-serif" font-size="11" fill="currentColor">R1 platform open</text>
-          <path class="strand-seg" d="M 130 50 L 220 50" stroke="#16a34a" stroke-width="7" fill="none" stroke-linecap="round"/>
+          <path class="strand-seg" d="M 168 50 L 220 50" stroke="#16a34a" stroke-width="7" fill="none" stroke-linecap="round"/>
           <path class="strand-seg" d="M 220 50 Q 260 50 300 66" stroke="#b45309" stroke-width="7" fill="none" stroke-linecap="round"/>
           <path class="strand-seg" d="M 300 66 L 540 66" stroke="#b45309" stroke-width="7" fill="none" stroke-linecap="round"/>
           <path class="strand-seg" d="M 540 66 L 700 66" stroke="#b45309" stroke-width="7" fill="none" stroke-linecap="round"/>
 
           <!-- R2 URL input, preserved -->
           <text x="20" y="92" font-family="ui-sans-serif,sans-serif" font-size="11" fill="currentColor">R2 URL input</text>
-          <path class="strand-seg" d="M 130 88 L 700 88" stroke="#16a34a" stroke-width="7" fill="none" stroke-linecap="round"/>
+          <path class="strand-seg" d="M 168 88 L 700 88" stroke="#16a34a" stroke-width="7" fill="none" stroke-linecap="round"/>
 
           <!-- R3 look at live site + CSS, preserved -->
           <text x="20" y="130" font-family="ui-sans-serif,sans-serif" font-size="11" fill="currentColor">R3 read live site + CSS</text>
-          <path class="strand-seg" d="M 130 126 L 700 126" stroke="#16a34a" stroke-width="7" fill="none" stroke-linecap="round"/>
+          <path class="strand-seg" d="M 168 126 L 700 126" stroke="#16a34a" stroke-width="7" fill="none" stroke-linecap="round"/>
 
           <!-- R4 output file design.md, mutated at S1, changes color -->
           <text x="20" y="168" font-family="ui-sans-serif,sans-serif" font-size="11" fill="currentColor">R4 output file design.md</text>
-          <path class="strand-seg" d="M 130 164 L 220 164" stroke="#16a34a" stroke-width="7" fill="none" stroke-linecap="round"/>
+          <path class="strand-seg" d="M 168 164 L 220 164" stroke="#16a34a" stroke-width="7" fill="none" stroke-linecap="round"/>
           <path class="strand-seg" d="M 220 164 Q 260 164 300 178" stroke="#b45309" stroke-width="7" fill="none" stroke-linecap="round"/>
           <path class="strand-seg" d="M 300 178 L 540 178" stroke="#b45309" stroke-width="7" fill="none" stroke-linecap="round"/>
           <path class="strand-seg" d="M 540 178 L 700 178" stroke="#b45309" stroke-width="7" fill="none" stroke-linecap="round"/>
 
           <!-- R5 exhaustive detail, preserved -->
           <text x="20" y="206" font-family="ui-sans-serif,sans-serif" font-size="11" fill="currentColor">R5 exhaustive detail</text>
-          <path class="strand-seg" d="M 130 202 L 700 202" stroke="#16a34a" stroke-width="7" fill="none" stroke-linecap="round"/>
+          <path class="strand-seg" d="M 168 202 L 700 202" stroke="#16a34a" stroke-width="7" fill="none" stroke-linecap="round"/>
 
           <!-- R6 theme colors format, preserved -->
           <text x="20" y="244" font-family="ui-sans-serif,sans-serif" font-size="11" fill="currentColor">R6 theme, colors, format</text>
-          <path class="strand-seg" d="M 130 240 L 700 240" stroke="#16a34a" stroke-width="7" fill="none" stroke-linecap="round"/>
+          <path class="strand-seg" d="M 168 240 L 700 240" stroke="#16a34a" stroke-width="7" fill="none" stroke-linecap="round"/>
           <polygon points="612,240 622,232 632,240 622,248" fill="currentColor"/>
           <text x="622" y="264" font-family="ui-sans-serif,sans-serif" font-size="8" fill="currentColor" text-anchor="middle">seq 14-15</text>
 
           <!-- R7 CSS animations + backgrounds, preserved -->
           <text x="20" y="282" font-family="ui-sans-serif,sans-serif" font-size="11" fill="currentColor">R7 CSS animations + bg</text>
-          <path class="strand-seg" d="M 130 278 L 700 278" stroke="#16a34a" stroke-width="7" fill="none" stroke-linecap="round"/>
+          <path class="strand-seg" d="M 168 278 L 700 278" stroke="#16a34a" stroke-width="7" fill="none" stroke-linecap="round"/>
           <polygon points="462,278 472,270 482,278 472,286" fill="currentColor"/>
           <text x="472" y="302" font-family="ui-sans-serif,sans-serif" font-size="8" fill="currentColor" text-anchor="middle">seq 5-6</text>
 
           <!-- R8 inline-encoded elements, preserved -->
           <text x="20" y="320" font-family="ui-sans-serif,sans-serif" font-size="11" fill="currentColor">R8 inline-encoded elements</text>
-          <path class="strand-seg" d="M 130 316 L 700 316" stroke="#16a34a" stroke-width="7" fill="none" stroke-linecap="round"/>
+          <path class="strand-seg" d="M 168 316 L 700 316" stroke="#16a34a" stroke-width="7" fill="none" stroke-linecap="round"/>
 
           <!-- R9 Shopify example, preserved -->
           <text x="20" y="358" font-family="ui-sans-serif,sans-serif" font-size="11" fill="currentColor">R9 Shopify example input</text>
-          <path class="strand-seg" d="M 130 354 L 700 354" stroke="#16a34a" stroke-width="7" fill="none" stroke-linecap="round"/>
+          <path class="strand-seg" d="M 168 354 L 700 354" stroke="#16a34a" stroke-width="7" fill="none" stroke-linecap="round"/>
           <polygon points="542,354 552,346 562,354 552,362" fill="currentColor"/>
           <text x="552" y="378" font-family="ui-sans-serif,sans-serif" font-size="8" fill="currentColor" text-anchor="middle">seq 8-9</text>
 
@@ -517,7 +538,7 @@
     </figure>
   </div>
 
-  <h2>The drift table</h2>
+  <h2><span class="kicker">Figure 4</span>The drift table</h2>
   <figure>
     <div class="fig-scroll">
       <table class="drift">
@@ -543,7 +564,7 @@
     </figcaption>
   </figure>
 
-  <h2>Three correction stories</h2>
+  <h2><span class="kicker">Findings</span>Three correction stories</h2>
   <p>
     The review loop between Claude and codex-1 fired three times. Each time, Claude's acceptance run found
     something the subagent's own tests had passed anyway, sent a correction, and got a fix back before
@@ -588,7 +609,7 @@
     </div>
   </div>
 
-  <h2>Limitations</h2>
+  <h2><span class="kicker">Honesty</span>Limitations</h2>
   <ul class="limits">
     <li>This is one run of one build task. Nothing here claims to generalize to other tasks, other
       supervising models, or other coding agents.</li>
@@ -621,6 +642,12 @@
     sections.forEach(function (s) { if (s) s.classList.add('revealed'); });
     return;
   }
+  document.querySelectorAll('#timeline-section .tick').forEach(function (el, i) {
+    el.style.transitionDelay = (i * 45) + 'ms';
+  });
+  document.querySelectorAll('#lineage-section .strand-seg').forEach(function (el, i) {
+    el.style.transitionDelay = (i * 70) + 'ms';
+  });
   var io = new IntersectionObserver(function (entries) {
     entries.forEach(function (entry) {
       if (entry.isIntersecting) {
